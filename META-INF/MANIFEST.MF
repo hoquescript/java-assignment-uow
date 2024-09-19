@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Javaparser
+Bundle-SymbolicName: Javaparser
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.jdt.core;bundle-version="3.39.0",
+ org.eclipse.jdt;bundle-version="3.19.600",
+ org.eclipse.core.resources;bundle-version="3.21.0",
+ org.eclipse.core.runtime;bundle-version="3.31.100"
+Automatic-Module-Name: Javaparser
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
