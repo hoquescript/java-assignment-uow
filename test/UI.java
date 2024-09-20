@@ -1,3 +1,4 @@
+import java.awt.Button;
 
 public class UI {
 	public void addButton(Panel panel) {
@@ -6,6 +7,8 @@ public class UI {
 		b.setAttrib(0);
 		panel.init();
 		panel.addElement(b);
-		panel.setAttrib(b.getAttrib());
+		b.addMouseListener(panel);
+		panel.setAttrib(b.getAttrib(panel));
+		panel.init();
 	}
 }

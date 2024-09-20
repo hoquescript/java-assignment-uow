@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -47,6 +48,9 @@ public class Assignment_4 {
 		ASTVisitor tree = new ASTVisitor() {
 			@Override
 			public boolean visit(MethodDeclaration methodDeclaration) {
+				System.out.println("Line: " + cu.getLineNumber(methodDeclaration.getStartPosition())
+						+ " Method Declaration: " + methodDeclaration.getName());
+				System.out.println();
 				HashMap<String, String[]> map = new HashMap<>();
 				methodDeclaration.accept(new ASTVisitor() {
 					@Override
@@ -55,30 +59,33 @@ public class Assignment_4 {
 							Expression expression = (Expression) arg;
 							if (expression instanceof SimpleName) {
 								insertData(map, arg.toString(), methodInvocation.getName().toString());
-								System.out.println(arg + "XX");
+								//System.out.println(arg + "XX");
 							} else if (expression instanceof MethodInvocation) {
 								MethodInvocation methodInvocationArg = (MethodInvocation) expression;
 								Expression baseExpression = methodInvocationArg.getExpression();
 								SimpleName methodName = methodInvocationArg.getName();
-								System.out.println("This is a Method Invocation: " + baseExpression + "." + methodName);
+								insertData(map, baseExpression.toString(), methodInvocation.getName().toString());
+								//System.out.println("This is a Method Invocation: " + baseExpression + "." + methodName);
 								// We should further calculate for arguments for here as well
 							} else {
 								continue;
 							}
-
-//							
 						}
+						System.out.println(
+								"Line: " + cu.getLineNumber(methodInvocation.getStartPosition()) + " Method Call: "
+										+ methodInvocation.getExpression() + "." + methodInvocation.getName() + "()");
+						System.out.println("Methods that use " + methodInvocation.getExpression()
+								+ " in their arguments: " + Arrays.toString(map.get(methodInvocation.getExpression().toString())));
 
-						System.out.println(methodInvocation.getExpression());
-						System.out.println(methodInvocation.arguments());
-						System.out.println(methodInvocation.getName().toString());
-						System.out.println("Map");
-						for (String key : map.keySet()) {
-							System.out.println(key + ": " + Arrays.toString(map.get(key)));
-						}
+//						System.out.println(methodInvocation.getExpression());
+//						System.out.println(methodInvocation.arguments());
+//						System.out.println(methodInvocation.getName().toString());
+//						System.out.println("Map");
+//						for (String key : map.keySet()) {
+//							System.out.println(key + ": " + Arrays.toString(map.get(key)));
+//						}
 						System.out.println("________________");
 						return super.visit(methodInvocation);
-
 					}
 
 				});
