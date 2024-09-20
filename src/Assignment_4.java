@@ -50,7 +50,7 @@ public class Assignment_4 {
 			public boolean visit(MethodDeclaration methodDeclaration) {
 				System.out.println("Line: " + cu.getLineNumber(methodDeclaration.getStartPosition())
 						+ " Method Declaration: " + methodDeclaration.getName());
-				System.out.println();
+				System.out.println("------------------------------------------");
 				HashMap<String, String[]> map = new HashMap<>();
 				methodDeclaration.accept(new ASTVisitor() {
 					@Override
@@ -75,16 +75,8 @@ public class Assignment_4 {
 								"Line: " + cu.getLineNumber(methodInvocation.getStartPosition()) + " Method Call: "
 										+ methodInvocation.getExpression() + "." + methodInvocation.getName() + "()");
 						System.out.println("Methods that use " + methodInvocation.getExpression()
-								+ " in their arguments: " + Arrays.toString(map.get(methodInvocation.getExpression().toString())));
-
-//						System.out.println(methodInvocation.getExpression());
-//						System.out.println(methodInvocation.arguments());
-//						System.out.println(methodInvocation.getName().toString());
-//						System.out.println("Map");
-//						for (String key : map.keySet()) {
-//							System.out.println(key + ": " + Arrays.toString(map.get(key)));
-//						}
-						System.out.println("________________");
+								+ " in their arguments: " + Arrays.toString(map.get(methodInvocation.getExpression().toString())) + "\n");
+						
 						return super.visit(methodInvocation);
 					}
 
