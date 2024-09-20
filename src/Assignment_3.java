@@ -7,10 +7,12 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 
 public class Assignment_3 {
 	public Assignment_3() throws IOException {
@@ -23,19 +25,24 @@ public class Assignment_3 {
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 
 		ASTVisitor tree = new ASTVisitor() {
+
 			@Override
-			public boolean visit(MethodDeclaration node) {
-				String modifier = getModifiersString(node.getModifiers());
-				System.out.println("Line: " + cu.getLineNumber(node.getStartPosition()) + " Method Declaration: "
-						+ modifier + " " + node.getReturnType2() + " " + node.getName());
-				node.accept(new ASTVisitor() {
+			public boolean visit(MethodDeclaration declare) {
+				String modifier = getModifiersString(declare.getModifiers());
+				System.out.println("Line: " + cu.getLineNumber(declare.getStartPosition()) + " Method Declaration: "
+						+ modifier + " " + declare.getReturnType2() + " " + declare.getName());
+				declare.accept(new ASTVisitor() {
 					@Override
 					public boolean visit(MethodInvocation node) {
+						IMethodBinding methodBinding = node.resolveMethodBinding();
+						System.out.println(node.resolveMethodBinding());
+						
+						System.out.println(node.typeArguments());
 						Expression expression = node.getExpression();
 						if (expression instanceof SimpleName) {
 							SimpleName name = (SimpleName) expression;
 							int lineNumber = cu.getLineNumber(node.getStartPosition());
-							System.out.println(lineNumber + " " + name.getIdentifier());
+							System.out.println("Line: " + lineNumber + " " + name.getIdentifier());
 							System.out.println(cu.findDeclaringNode(content));
 //							node.getParent().getParent().accept(new ASTVisitor() {
 //								public boolean visit(MethodInvocation node) {

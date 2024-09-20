@@ -39,38 +39,23 @@ public class Assignment_2 {
 			@Override
 			public boolean visit(MethodInvocation node) {
 				// Iterate over arguments
-                for (Object arg : node.arguments()) {
-                    Expression expression = (Expression) arg;
-                    ITypeBinding typeBinding = expression.resolveTypeBinding();
-                    System.out.println(expression + " " + typeBinding);
-                    if (typeBinding != null) {
-                        System.out.println("Argument type: " + typeBinding.getQualifiedName());
-                    } else {
-                        System.out.println("Unable to resolve argument type");
-                    }
-                };
+//                for (Object arg : node.arguments()) {
+//                    Expression expression = (Expression) arg;
+//                    ITypeBinding typeBinding = expression.resolveTypeBinding();
+//                    System.out.println(expression + " " + typeBinding);
+//                    if (typeBinding != null) {
+//                        System.out.println("Argument type: " + typeBinding.getQualifiedName());
+//                    } else {
+//                        System.out.println("Unable to resolve argument type");
+//                    }
+//                };
+                System.out.println(node.typeArguments());
+//                node.typeArguments();
 //				System.out.println("Line: " + cu.getLineNumber(node.getStartPosition()) + " Method Declaration: "
 //						+ node.getExpression().toString() + "." + node.getName().getIdentifier()+"()");
 //				System.out.println("Method Signature: " + node.getName() + ":" + node.arguments().size() + ":"  );
 				return super.visit(node);
 			}
-			@Override
-            public boolean visit(ClassInstanceCreation node) {
-                System.out.println("Class instance creation: " + node.getType());
-
-                // Retrieve and print argument types for class instance creation
-                for (Object arg : node.arguments()) {
-                    Expression expression = (Expression) arg;
-                    ITypeBinding typeBinding = expression.resolveTypeBinding();
-                    if (typeBinding != null) {
-                        System.out.println("Argument type: " + typeBinding.getQualifiedName());
-                    } else {
-                        System.out.println("Unable to resolve argument type");
-                    }
-                }
-
-                return super.visit(node);
-            }
 		};
 
 		cu.accept(tree);
