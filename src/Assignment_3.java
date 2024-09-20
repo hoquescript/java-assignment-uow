@@ -43,15 +43,15 @@ public class Assignment_3 {
 							SimpleName name = (SimpleName) expression;
 							int lineNumber = cu.getLineNumber(node.getStartPosition());
 							System.out.println("Line: " + lineNumber + " " + name.getIdentifier());
-							System.out.println(cu.findDeclaringNode(content));
-//							node.getParent().getParent().accept(new ASTVisitor() {
-//								public boolean visit(MethodInvocation node) {
-//									System.out.println("X" + lineNumber + " " + node.getName());
-//									return true;
-//								};
-//							});
+
 						}
 						return super.visit(node);
+					}
+					@Override
+					public void endVisit(MethodDeclaration node) {
+						System.out.println(node.getName());
+						// TODO Auto-generated method stub
+						super.endVisit(node);
 					}
 				});
 				return true;
