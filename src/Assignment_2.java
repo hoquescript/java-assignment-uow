@@ -2,8 +2,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
@@ -23,7 +25,6 @@ public class Assignment_2 {
 	public Assignment_2() throws IOException {
 		String relativePath = "test/ContentReader.java";
 		Path path = Paths.get(relativePath);
-		System.out.println(path);
 		String content = Files.readString(path);
 
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
@@ -45,29 +46,26 @@ public class Assignment_2 {
 
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 
-		if (cu.getAST().hasBindingsRecovery()) {
-			System.out.println("Binding activated.");
-		}
-
 		ASTVisitor tree = new ASTVisitor() {
 			@Override
 			public boolean visit(MethodInvocation node) {
-                for (Object arg : node.arguments()) {
-                    Expression expression = (Expression) arg;
-                    ITypeBinding typeBinding = expression.resolveTypeBinding();
-                    System.out.println(expression + "XX" + typeBinding.getName());
-                    if (typeBinding != null) {
-                        System.out.println("Argument type: " + typeBinding.getQualifiedName());
-                    } else {
-                        System.out.println("Unable to resolve argument type");
-                    }
-                };
-				System.out.println("Line: " + cu.getLineNumber(node.getStartPosition()) + " Method Declaration: "
-						+ node.getExpression().toString() + "." + node.getName().getIdentifier() + "()");
-				System.out.println("Method Signature: " + node.getName() + ":" + node.arguments().size() + ":");
-				System.out.println("_____________");
+				ArrayList<String> params = new ArrayList<>();
+				ArrayList<String> types = new ArrayList<>();
+				for (Object arg : node.arguments()) {
+					Expression expression = (Expression) arg;
+					ITypeBinding typeBinding = expression.resolveTypeBinding();
+					if (typeBinding != null) {
+						params.add(expression.toString());
+						types.add(typeBinding.getName());
+					}
+				}
+				System.out.printf("Line: %d Method Declaration: %s.%s(%s)%n", cu.getLineNumber(node.getStartPosition()),
+						node.getExpression().toString(), node.getName().getIdentifier(), String.join(",", params));
+				System.out.printf("Method Signature: %s:%d:%s%n", node.getName(), node.arguments().size(),
+						String.join(",", types));
+				System.out.println();
 				return super.visit(node);
-				
+
 			}
 		};
 

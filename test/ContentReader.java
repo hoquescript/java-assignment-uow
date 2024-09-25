@@ -33,7 +33,8 @@ public class ContentReader {
 			br.close();
 		}
 		sb.trimToSize();
-		String everything = sb.toString();
+		int bb = 5;
+		String everything = sb.toString(bb);
 		return everything;
 	}
 
