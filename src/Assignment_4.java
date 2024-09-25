@@ -53,19 +53,18 @@ public class Assignment_4 {
 				System.out.println("------------------------------------------");
 				HashMap<String, String[]> map = new HashMap<>();
 				methodDeclaration.accept(new ASTVisitor() {
+					
 					@Override
 					public boolean visit(MethodInvocation methodInvocation) {
 						for (Object arg : methodInvocation.arguments()) {
 							Expression expression = (Expression) arg;
 							if (expression instanceof SimpleName) {
 								insertData(map, arg.toString(), methodInvocation.getName().toString());
-								//System.out.println(arg + "XX");
 							} else if (expression instanceof MethodInvocation) {
 								MethodInvocation methodInvocationArg = (MethodInvocation) expression;
 								Expression baseExpression = methodInvocationArg.getExpression();
 								SimpleName methodName = methodInvocationArg.getName();
 								insertData(map, baseExpression.toString(), methodInvocation.getName().toString());
-								//System.out.println("This is a Method Invocation: " + baseExpression + "." + methodName);
 								// We should further calculate for arguments for here as well
 							} else {
 								continue;

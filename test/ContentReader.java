@@ -21,10 +21,9 @@ public class ContentReader {
 
 	public String read() throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(this.getInputFile()));
-		StringBuilder sb = new StringBuilder();
 		try {
 			String line = br.readLine();
-
+			StringBuilder sb = new StringBuilder();
 			while (line != null) {
 				sb.append(line);
 				sb.append(System.lineSeparator());
