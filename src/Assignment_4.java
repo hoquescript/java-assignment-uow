@@ -19,21 +19,6 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 
 public class Assignment_4 {
-	private static void insertData(HashMap<String, String[]> map, String key, String simpleName) {
-		if (map.containsKey(key)) {
-			// If the key exists, get the existing array
-			String[] existingArray = map.get(key);
-			// Create a new array with an extra slot
-			String[] newArray = Arrays.copyOf(existingArray, existingArray.length + 1);
-			// Add the new value to the last position
-			newArray[newArray.length - 1] = simpleName;
-			// Update the map with the new array
-			map.put(key, newArray);
-		} else {
-			// If the key does not exist, create a new array with the value
-			map.put(key, new String[] { simpleName });
-		}
-	}
 
 	public Assignment_4() throws IOException {
 		String relativePath = "test/UI.java";
@@ -53,7 +38,7 @@ public class Assignment_4 {
 				System.out.println("------------------------------------------");
 				HashMap<String, String[]> map = new HashMap<>();
 				methodDeclaration.accept(new ASTVisitor() {
-					
+
 					@Override
 					public boolean visit(MethodInvocation methodInvocation) {
 						for (Object arg : methodInvocation.arguments()) {
@@ -73,9 +58,10 @@ public class Assignment_4 {
 						System.out.println(
 								"Line: " + cu.getLineNumber(methodInvocation.getStartPosition()) + " Method Call: "
 										+ methodInvocation.getExpression() + "." + methodInvocation.getName() + "()");
-						System.out.println("Methods that use " + methodInvocation.getExpression()
-								+ " in their arguments: " + Arrays.toString(map.get(methodInvocation.getExpression().toString())) + "\n");
-						
+						System.out.println(
+								"Methods that use " + methodInvocation.getExpression() + " in their arguments: "
+										+ Arrays.toString(map.get(methodInvocation.getExpression().toString())) + "\n");
+
 						return super.visit(methodInvocation);
 					}
 
@@ -86,6 +72,22 @@ public class Assignment_4 {
 		};
 
 		cu.accept(tree);
+	}
+
+	private static void insertData(HashMap<String, String[]> map, String key, String simpleName) {
+		if (map.containsKey(key)) {
+			// If the key exists, get the existing array
+			String[] existingArray = map.get(key);
+			// Create a new array with an extra slot
+			String[] newArray = Arrays.copyOf(existingArray, existingArray.length + 1);
+			// Add the new value to the last position
+			newArray[newArray.length - 1] = simpleName;
+			// Update the map with the new array
+			map.put(key, newArray);
+		} else {
+			// If the key does not exist, create a new array with the value
+			map.put(key, new String[] { simpleName });
+		}
 	}
 
 }

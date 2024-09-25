@@ -40,7 +40,10 @@ public class Assignment {
 		System.out.println("---------------------------------------------------");
 		new Assignment_2(cu);
 
-		// new Assignment_3();
+		System.out.println("Question-3");
+		System.out.println("---------------------------------------------------");
+		new Assignment_3(cu);
+
 		// new Assignment_4();
 	}
 
