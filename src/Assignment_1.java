@@ -1,63 +1,45 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
-public class Assignment_1 {
-	public Assignment_1() throws IOException {
-		String path = "/Users/wahid/ContentReader.java";
-		String content = Files.readString(Paths.get(path));
-		ASTParser parser = ASTParser.newParser(AST.getJLSLatest());
-
-		parser.setSource(content.toCharArray());
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-
+public class Assignment_1 extends Assignment {
+	public Assignment_1(CompilationUnit cu) {
 		ASTVisitor tree = new ASTVisitor() {
-			boolean hasVariables = false;
-
 			@Override
 			public boolean visit(MethodDeclaration node) {
-				System.out.println("Line: " + cu.getLineNumber(node.getStartPosition()) + " Method Declaration: "
-						+ node.getName().getIdentifier());
+				System.out.printf("Line: %d Method Declaration: %s%n", cu.getLineNumber(node.getStartPosition()),
+						node.getName().getIdentifier());
 				System.out.println("Variables declared in this method declaration:");
-
 				node.accept(new ASTVisitor() {
-					int index = 1;
+					// Tracks variable declaration count inside the method
+					int index = 0;
 
 					@Override
 					public boolean visit(VariableDeclarationFragment fragment) {
-						hasVariables = true;
-						System.out.println("[" + index + "]" + "Line: " + cu.getLineNumber(fragment.getStartPosition())
-								+ " Variable Name: " + fragment.getName().getIdentifier());
+						// Incrementing the count after visiting VariableDeclarationFragment node
+						index += 1;
+
+						int line = cu.getLineNumber(fragment.getStartPosition());
+						String variable = fragment.getName().getIdentifier();
+						System.out.printf("[%d] Line: %d Variable Name: %s%n", index, line, variable);
+
 						return super.visit(fragment);
 					}
 
 					@Override
-					public void endVisit(VariableDeclarationFragment node) {
-						index += 1;
+					public void endVisit(MethodDeclaration node) {
+						// If no variables were declared in the method, prints "None"
+						if (index == 0) {
+							System.out.println("None");
+						}
+						System.out.println("");
 						super.endVisit(node);
 					}
 
 				});
 				return true;
 			}
-
-			@Override
-			public void endVisit(MethodDeclaration node) {
-				if (!hasVariables) {
-					System.out.println("None");
-				}
-				System.out.println("");
-				super.endVisit(node);
-			}
-
 		};
 
 		cu.accept(tree);
