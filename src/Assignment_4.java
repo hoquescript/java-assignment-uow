@@ -45,7 +45,7 @@ public class Assignment_4 {
 						String methodCollection = Arrays.toString(map.get(identifier));
 
 						System.out.printf("Line: %d Method Call: %s.%s()%n", line, identifier, methodName);
-						System.out.printf("Methods that use %s in their arguments: %s%n", identifier, methodCollection);
+						System.out.printf("Methods that use %s in their arguments: %s%n\n", identifier, methodCollection);
 
 						return super.visit(methodInvocation);
 					}

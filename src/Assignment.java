@@ -12,8 +12,8 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 public class Assignment {
 	public static void main(String[] args) throws IOException {
 		// Reading source file
-		String directory = "test";
-		String file = "LogWriter.java";
+		String directory = "test"; // Directory name in which Source Code is stored
+		String file = "ContentReader.java"; // Filename of the Source Code
 		Path path = Paths.get(directory + "/" + file);
 		String content = Files.readString(path);
 
