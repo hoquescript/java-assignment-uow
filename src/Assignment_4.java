@@ -1,66 +1,51 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
+import java.util.Map;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.StructuralPropertyDescriptor;
 
 public class Assignment_4 {
-
-	public Assignment_4() throws IOException {
-		String relativePath = "test/UI.java";
-		Path path = Paths.get(relativePath);
-		String content = Files.readString(path);
-		ASTParser parser = ASTParser.newParser(AST.JLS8);
-
-		parser.setSource(content.toCharArray());
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-
+	public Assignment_4(CompilationUnit cu) {
 		ASTVisitor tree = new ASTVisitor() {
 			@Override
 			public boolean visit(MethodDeclaration methodDeclaration) {
-				System.out.println("Line: " + cu.getLineNumber(methodDeclaration.getStartPosition())
-						+ " Method Declaration: " + methodDeclaration.getName());
-				System.out.println("------------------------------------------");
-				HashMap<String, String[]> map = new HashMap<>();
+				System.out.println("###");
+				System.out.printf("Line: %d Method Declaration: %s%n",
+						cu.getLineNumber(methodDeclaration.getStartPosition()), methodDeclaration.getName());
+
+				Map<String, String[]> map = new HashMap<>();
 				methodDeclaration.accept(new ASTVisitor() {
 
 					@Override
 					public boolean visit(MethodInvocation methodInvocation) {
+						// Iterate through each argument of the method invocation
 						for (Object arg : methodInvocation.arguments()) {
 							Expression expression = (Expression) arg;
 							if (expression instanceof SimpleName) {
+								// If the argument is a simple name (like a variable), add it to the map
 								insertData(map, arg.toString(), methodInvocation.getName().toString());
 							} else if (expression instanceof MethodInvocation) {
+								// If the argument is another method invocation, handle it accordingly
 								MethodInvocation methodInvocationArg = (MethodInvocation) expression;
 								Expression baseExpression = methodInvocationArg.getExpression();
-								SimpleName methodName = methodInvocationArg.getName();
 								insertData(map, baseExpression.toString(), methodInvocation.getName().toString());
-								// We should further calculate for arguments for here as well
 							} else {
+								// Skip if the argument is neither SimpleName nor MethodInvocation
 								continue;
 							}
 						}
-						System.out.println(
-								"Line: " + cu.getLineNumber(methodInvocation.getStartPosition()) + " Method Call: "
-										+ methodInvocation.getExpression() + "." + methodInvocation.getName() + "()");
-						System.out.println(
-								"Methods that use " + methodInvocation.getExpression() + " in their arguments: "
-										+ Arrays.toString(map.get(methodInvocation.getExpression().toString())) + "\n");
+
+						int line = cu.getLineNumber(methodInvocation.getStartPosition());
+						String identifier = methodInvocation.getExpression().toString();
+						String methodName = methodInvocation.getName().toString();
+						String methodCollection = Arrays.toString(map.get(identifier));
+
+						System.out.printf("Line: %d Method Call: %s.%s()%n", line, identifier, methodName);
+						System.out.printf("Methods that use %s in their arguments: %s%n", identifier, methodCollection);
 
 						return super.visit(methodInvocation);
 					}
@@ -74,7 +59,7 @@ public class Assignment_4 {
 		cu.accept(tree);
 	}
 
-	private static void insertData(HashMap<String, String[]> map, String key, String simpleName) {
+	private static void insertData(Map<String, String[]> map, String key, String simpleName) {
 		if (map.containsKey(key)) {
 			// If the key exists, get the existing array
 			String[] existingArray = map.get(key);
@@ -89,5 +74,4 @@ public class Assignment_4 {
 			map.put(key, new String[] { simpleName });
 		}
 	}
-
 }

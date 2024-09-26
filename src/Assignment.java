@@ -13,7 +13,7 @@ public class Assignment {
 	public static void main(String[] args) throws IOException {
 		// Reading source file
 		String directory = "test";
-		String file = "ContentReader.java";
+		String file = "LogWriter.java";
 		Path path = Paths.get(directory + "/" + file);
 		String content = Files.readString(path);
 
@@ -24,6 +24,7 @@ public class Assignment {
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
 
+		// Configuring parser options
 		Map<String, String> options = JavaCore.getOptions();
 		parser.setCompilerOptions(options);
 		parser.setUnitName(file);
@@ -43,8 +44,10 @@ public class Assignment {
 		System.out.println("Question-3");
 		System.out.println("---------------------------------------------------");
 		new Assignment_3(cu);
-
-		// new Assignment_4();
+		
+		System.out.println("Question-4");
+		System.out.println("---------------------------------------------------");
+		new Assignment_4(cu);
 	}
 
 }
